@@ -44,6 +44,11 @@ enum class Colour(
         darkThemeHexColour = R.color.instances_yellow,
         lightThemeHexColour = R.color.instances_yellow
     ),
+    RED(
+        displayString = R.string.red,
+        darkThemeHexColour = R.color.instances_red,
+        lightThemeHexColour = R.color.instances_red
+    ),
     BLACK(
         displayString = R.string.black,
         darkThemeHexColour = R.color.instances_black,
