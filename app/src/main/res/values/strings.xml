@@ -81,5 +81,7 @@
     <!-- messages-->
     <string name="no_calendar_application">No calendar application found</string>
     <string name="no_browser_application">No browser application found</string>
+    <string name="show_title_bar">Show title bar</string>
+    <string name="configure_label">MinCal Configuration</string>
 
 </resources>

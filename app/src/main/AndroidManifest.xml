@@ -50,6 +50,24 @@
             android:noHistory="true"
             android:theme="@style/Theme.AppCompat" />
 
+        <activity-alias
+            android:name="cat.mvmike.minimalcalendarwidget.domain.configuration.item.VisibleLauncherAlias"
+            android:enabled="false"
+            android:icon="@mipmap/ic_launcher"
+            android:label="@string/configure_label"
+            android:targetActivity=".infrastructure.activity.ConfigurationActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity-alias>
+
+        <activity-alias
+            android:name="cat.mvmike.minimalcalendarwidget.domain.configuration.item.InvisibleLauncherAlias"
+            android:enabled="true"
+            android:targetActivity=".infrastructure.activity.ConfigurationActivity" />
+
     </application>
 
 </manifest>

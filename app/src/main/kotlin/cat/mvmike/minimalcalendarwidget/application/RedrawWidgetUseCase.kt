@@ -5,6 +5,7 @@ package cat.mvmike.minimalcalendarwidget.application
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
+import android.view.View
 import android.widget.RemoteViews
 import cat.mvmike.minimalcalendarwidget.MonthWidget
 import cat.mvmike.minimalcalendarwidget.R
@@ -12,6 +13,7 @@ import cat.mvmike.minimalcalendarwidget.domain.component.DaysHeaderService
 import cat.mvmike.minimalcalendarwidget.domain.component.DaysService
 import cat.mvmike.minimalcalendarwidget.domain.component.LayoutService
 import cat.mvmike.minimalcalendarwidget.domain.component.MonthAndYearHeaderService
+import cat.mvmike.minimalcalendarwidget.domain.configuration.BooleanConfigurationItem
 import cat.mvmike.minimalcalendarwidget.domain.configuration.ConfigurationItem
 import cat.mvmike.minimalcalendarwidget.domain.configuration.item.getFormat
 import cat.mvmike.minimalcalendarwidget.domain.intent.ActionableView
@@ -47,6 +49,7 @@ object RedrawWidgetUseCase {
     ) = runCatching {
         val widgetRemoteView = RemoteViews(context.packageName, R.layout.widget)
         widgetRemoteView.removeAllViews(R.id.calendar_days_layout)
+        if (!BooleanConfigurationItem.WidgetShowTitleBar.get(context)) widgetRemoteView.setViewVisibility(R.id.title_bar, View.GONE)
 
         val format = when {
             upsertFormat -> getFormat(context, appWidgetManager, appWidgetId)

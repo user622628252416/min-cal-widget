@@ -2,34 +2,23 @@
 // See LICENSE for licensing information
 package cat.mvmike.minimalcalendarwidget.infrastructure.activity
 
-import android.content.ActivityNotFoundException
-import android.content.Context
-import android.content.Intent
-import android.content.SharedPreferences
+import android.content.*
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.preference.CheckBoxPreference
-import androidx.preference.ListPreference
-import androidx.preference.Preference
-import androidx.preference.PreferenceFragmentCompat
-import androidx.preference.SeekBarPreference
+import androidx.preference.*
 import cat.mvmike.minimalcalendarwidget.BuildConfig
 import cat.mvmike.minimalcalendarwidget.R
 import cat.mvmike.minimalcalendarwidget.application.RedrawWidgetUseCase
-import cat.mvmike.minimalcalendarwidget.domain.configuration.BooleanConfigurationItem
-import cat.mvmike.minimalcalendarwidget.domain.configuration.ConfigurationItem
-import cat.mvmike.minimalcalendarwidget.domain.configuration.EnumConfigurationItem
-import cat.mvmike.minimalcalendarwidget.domain.configuration.PREFERENCE_KEY
-import cat.mvmike.minimalcalendarwidget.domain.configuration.SOURCE_KEY
-import cat.mvmike.minimalcalendarwidget.domain.configuration.SOURCE_URL
-import cat.mvmike.minimalcalendarwidget.domain.configuration.TRANSLATE_KEY
-import cat.mvmike.minimalcalendarwidget.domain.configuration.TRANSLATE_URL
-import cat.mvmike.minimalcalendarwidget.domain.configuration.VERSION_KEY
+import cat.mvmike.minimalcalendarwidget.domain.configuration.*
+import cat.mvmike.minimalcalendarwidget.domain.configuration.item.InvisibleLauncherAlias
+import cat.mvmike.minimalcalendarwidget.domain.configuration.item.VisibleLauncherAlias
 
-class ConfigurationActivity : AppCompatActivity() {
+
+open class ConfigurationActivity : AppCompatActivity() {
 
     companion object {
         fun start(context: Context) = context.startActivity(
@@ -64,12 +53,30 @@ class ConfigurationActivity : AppCompatActivity() {
         override fun onSharedPreferenceChanged(p0: SharedPreferences?, p1: String?) {
             updateCurrentSelection()
             RedrawWidgetUseCase.execute(requireContext())
+            setLauncherIconVisible()
         }
 
         override fun onDestroyView() {
             super.onDestroyView()
             preferenceManager.sharedPreferences!!.unregisterOnSharedPreferenceChangeListener(this)
         }
+
+        private fun setLauncherIconVisible() {
+            val visible = !BooleanConfigurationItem.WidgetShowTitleBar.get(requireContext())
+
+            val pm: PackageManager = requireContext().packageManager
+
+            if (visible) {
+                pm.setAliasEnabled(VisibleLauncherAlias::class.java, PackageManager.COMPONENT_ENABLED_STATE_ENABLED)
+                pm.setAliasEnabled(InvisibleLauncherAlias::class.java, PackageManager.COMPONENT_ENABLED_STATE_DISABLED)
+            } else {
+                pm.setAliasEnabled(VisibleLauncherAlias::class.java, PackageManager.COMPONENT_ENABLED_STATE_DISABLED)
+                pm.setAliasEnabled(InvisibleLauncherAlias::class.java, PackageManager.COMPONENT_ENABLED_STATE_ENABLED)
+            }
+        }
+
+        private fun PackageManager.setAliasEnabled(alias: Class<*>, value: Int) =
+            setComponentEnabledSetting(ComponentName(requireContext(), alias), value, PackageManager.DONT_KILL_APP)
 
         private fun fillEntriesAndValues() = enumConfigurationItems().forEach {
             it.asListPreference().apply {
@@ -118,7 +125,8 @@ class ConfigurationActivity : AppCompatActivity() {
 
         private fun booleanConfigurationItems() = setOf(
             BooleanConfigurationItem.WidgetShowDeclinedEvents,
-            BooleanConfigurationItem.WidgetFocusOnCurrentWeek
+            BooleanConfigurationItem.WidgetFocusOnCurrentWeek,
+            BooleanConfigurationItem.WidgetShowTitleBar,
         )
 
         private fun String.asPreference() =

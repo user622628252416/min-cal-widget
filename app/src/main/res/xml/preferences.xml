@@ -27,6 +27,11 @@
         android:title="@string/appearance"
         app:iconSpaceReserved="false">
 
+        <CheckBoxPreference
+            android:key="WIDGET_SHOW_TITLE_BAR"
+            android:icon="@drawable/ic_title"
+            android:title="@string/show_title_bar" />
+
         <ListPreference
             android:key="WIDGET_THEME"
             android:icon="@drawable/ic_invert_colors"

@@ -78,6 +78,11 @@ sealed class BooleanConfigurationItem(
         key = "WIDGET_FOCUS_ON_CURRENT_WEEK",
         defaultValue = false
     )
+
+    object WidgetShowTitleBar : BooleanConfigurationItem(
+        key = "WIDGET_SHOW_TITLE_BAR",
+        defaultValue = true
+    )
 }
 
 sealed class EnumConfigurationItem<E : Enum<E>>(
